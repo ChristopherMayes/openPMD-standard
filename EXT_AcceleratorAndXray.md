@@ -2,7 +2,7 @@ Accelerator Lattice Extension for the openPMD Standard
 ==========================================
 
 - This extension to the openPMD standard is indicated using:
-  - `openPMDextension = Accelerator`
+  - `openPMDextension = AcceleratorAndXray`
 
 
 Definitions
@@ -37,17 +37,26 @@ Additional Root Group (path `/`) Attributes
   - Description: The name of the root lattice file.
 
 
+
+
 Additional Particle Root Records
 ---------------------
 
+- `speciesName`
+  - Type: Required *(string)*
+  - Description: The name of the particle species. Species names must conform to the
+  `ParticleSpeciesNames` convention. See [ParticleSpeciesNames.md](ParticleSpeciesNames.md).
+  - Example: `electron`, `H2O++`.
+
 - `latticeElementName`
   - Type: Optional *(string)*
-  - Description: The name of the lattice element the particle is in.
+  - Description: The name of the lattice element the particles are in. This only makes sense if all
+  particles are in the same lattice element.
 
 - `latticeElementID`
   - Type Optional *(string)*
   - Description: The ID string for the lattice element the particle is in.
-  - Example: With Bmad based programs the ID string is of the form 
+  - Example: With [Bmad](https://www.classe.cornell.edu/bmad/) based programs the ID string is of the form 
     **branch-index>>element-index** where **branch-index** is the associated
 branch index integer, and **element-index** is the associated lattice element index within the branch.
 

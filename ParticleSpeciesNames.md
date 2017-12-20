@@ -1,37 +1,46 @@
-Species Specification
----------------------
+Convention for Specifying Particle Species 
+------------------------------------------
 
-Fundamental Particle Specification
+This convention is for standardizing the names of particle species.
+
+SubAtomic Particle Names
 ----------------------------------
 
  - Subatomic particle names:
-  - deuteron
-  - pion
   - antimuon
-  - proton
-  - positron
-  - photon
-  - electron
   - antiproton
-  - muon
-  - up
-  - down
-  - charm
-  - strange
-  - top
   - bottom
+  - charm-antiquark
+  - charm-quark
+  - deuteron
+  - down-antiquark
+  - down-quark
+  - electron
   - electron-neutrino
+  - gluon
+  - graviton
+  - higgs-boson
+  - muon
   - muon-neutrino
-  - tao
+  - neutron
+  - photon
+  - pion
+  - positron
+  - proton
+  - strange-antiquark
+  - strange-quark
+  - tao-antiquark
+  - tao-quark
   - tao-neutrino
+  - top-antiquark
+  - top-quark
+  - up-antiquark
+  - up-quark
   - w-boson
   - z-boson
-  - gluon
-  - higgs-boson
-  - graviton
 
 
-Atoms and Molecules
+Names for Atoms and Molecules
 -------------------
 
  - Atoms and molecules: Use standard chemical notation. Eg: "H20". Isotopes are denoted by a pound symbol "#" followed by the isotopic number followed by the chemical symbol. Eg: "#3He" for Helium-3.
