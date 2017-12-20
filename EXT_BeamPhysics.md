@@ -1,8 +1,8 @@
-Accelerator Lattice Extension for the openPMD Standard
+Extension to the openPMD Standard for Describing Particle Beams and X-rays
 ==========================================
 
 - This extension to the openPMD standard is indicated using:
-  - `openPMDextension = AcceleratorAndXray`
+  - `openPMDextension = BeamPhysics`
 
 
 Definitions
