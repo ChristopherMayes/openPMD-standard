@@ -1,28 +1,36 @@
 Extension to the openPMD Standard for Describing Particle Beams and X-rays
 ==========================================
 
+Version 1.0.0 (March 1, 2018)
+
+Overview
+------------
+
 The `BeamPhysics` extension to the openPMD standard is meant for describing particles and fields commonly encountered
 in accelerator physics simulations.
 
-- The `BeamPhysics` extension to the openPMD standard is indicated in a data file by the presence of the line:
+How to Use this Extension
+---------------
+
+The `BeamPhysics` extension to the openPMD standard is indicated in a data file by the setting of the `openPMDextension` attribute:
 ```
   openPMDextension = BeamPhysics, SpeciesType
 ```
 
-- Note: The `SpeciesType` extension must be used when using the `BeamPhysics` extension.
+Note: The `SpeciesType` extension must be used when using the `BeamPhysics` extension.
 
 Definitions
 -----------
 
 - **Lattice**: A **lattice** is the arrangement of elements in a machine such as a particle accelerator.
 
-- **Global** coordinate system: The **global** coordinate system is a coordinate system that is
+- **Global coordinate system**: The **global** coordinate system is a coordinate system that is
 used to describe the position and orientation of machine elements in space. That is, the **global**
 coordinate system is fixed with respect to the building or room where the machine is placed independent of the
 machine itself.
 
-- **Lattice** coordinate system: The curvilinear coordinate system whose "longitudinal"
-coordinate (typically called **s**) typically runs through the nominal centers of the elements 
+- **Lattice coordinate system**: The curvilinear coordinate system whose "longitudinal"
+coordinate (typically called **s**) typically runs through the nominal centers of the elements
 in the machine. Typically, the **lattice** coordinate system is used to describe misalignments
 of lattice elements with respect to the rest of the lattice.
 
@@ -34,7 +42,7 @@ called **groups**.
 - **Dataset**: A **dataset** is a structure that contains a set of zero or more **attributes** and a
 data aray (which may be multidimensional).  Note: In HDF5, these are also called **datasets**.
 
-- **Record**: A **record** is a **group** (without any sub-groups) or a **dataset** that contains data 
+- **Record**: A **record** is a **group** (without any sub-groups) or a **dataset** that contains data
 on a physical quantity like particle charge or electric field. There are two types of **records**:
     - **scalar records** hold scalar quantity
     values (like particle charge). If all the particles have the same charge, the value of the charge
@@ -48,22 +56,24 @@ on a physical quantity like particle charge or electric field. There are two typ
 - **Attribute**: An **attribute** is a variable associated with a **group** along with a
 value. Example: **snapshotPath** is a string variable associated with the root **/** group.
 
-- **Polar** coordinates: **(r, theta, phi)** where **r** is the radius, **theta** is he angle
+- **Polar coordinates**: **Polar** coordinates are **(r, theta, phi)** where **r** is the radius, **theta** is he angle
 from the **z** or **s** axis, and **phi** is the projected azimuthal angle in the **(x, y)**
 plane.
 
-- The **Particle Root Group** is the root group for specifying a group of particles.
+- **Particle Root Group**: The **Particle Root Group** is the root group for specifying a group of particles. There can be multiple **particle root groups** in a data file. For example, a set of particle bunches might specify one particle root group for each bunch. See the Base Standard for more information.
 
 Notes:
 ------
 
-- When using the **lattice** coordinate system, the `position` coordinates are **(x, y, s)** where 
-nominally **x** is the "radial" component, 
+- When using the **lattice** coordinate system, the `position` coordinates are **(x, y, s)** where
+nominally **x** is the "radial" component,
 **y** is the "vertical" coordinate, and **s** is the lattice longitudinal coordinate.
 
 
 Additional File Root Group (path `/`) Attributes
 -------------------------
+
+The following attributes are defined for the file root group.
 
 - `latticeName`
   - Type: Optional *(string)*
@@ -71,18 +81,18 @@ Additional File Root Group (path `/`) Attributes
 
 - `latticeFile`
   - Type: Optional *(string)*
-  - Description: The name of the root lattice file.
+  - Description: The location of the root lattice file.
 
 
 `Particle Root Group` Attributes
 ---------------------
 
-For each `particle record` the following attributes are defined:
+For each **particle root group** the following attributes are defined:
 
 - `SpeciesType`
   - Type: Required *(string)*
   - Description: The name of the particle species. Species names must conform to the
-  `SpeciesType` extension. 
+  `SpeciesType` extension.
   - Example: `electron`, `H2O`.
 
 - `charge`
@@ -100,45 +110,51 @@ For each `particle record` the following attributes are defined:
   - Description: The ID string for the lattice element given by `latticeElementName`. The idea is that while more than
     one lattice element may have the same name, the ID string will be unique.
   - This, along with `locationInElement` sets the origin for specifying particle positions in the **lattice** coordinate system.
-  - Example: With [Bmad](https://www.classe.cornell.edu/bmad/) based programs the ID string is of the form 
+  - Example: With [Bmad](https://www.classe.cornell.edu/bmad/) based programs the ID string is of the form
     **branch-index>>element-index** where **branch-index** is the associated
 branch index integer, and **element-index** is the associated lattice element index within the branch.
-  - If particle positions are to be expressed in the **global** coordinate system then `latticeElementID` needs to be blank.
 
 - `locationInElement`
   - Type Optional *(int)*
   - Description: This attribute is used with  `latticeElementID`/`latticeElementName` to specify
   the origin where the particle or particles are measured with respect in the **lattice** coordinate system.   
-  - The origin is always in the **lattice** coordinate system longitudinal axis with x = y = 0.
+  - The origin is always on the longitudinal axis (x = y = 0) of the **lattice** coordinate system.
   - Possible values:    
     - `Upstream-End`: Upstream end of element outside of any edge fields.
-    - `<s-position>`: Where `<s-position>` is a number. Inside the element at a distance, given by `<s-position>`, 
+    - `<s-position>`: Where `<s-position>` is a number. Inside the element at a distance, given by `<s-position>`,
     from the upsteam end of the element.
     - `Downstream-End`: Downstream end of the element outside of any edge fields.
   - Note: Since some programs will model edge fields of a lattice element as having zero length, the longitudinal **s**-position
-does not necessarily provide enough information to determine where a particle is with respect to an edge field.
+does not necessarily provide enough information to determine where a particle is with respect to an edge field so `Upstream-End` and `Downstream-End` are provided.
 
 - `momentumNormalization`
     - Type: Optional *(string)*
     - Description: Normalization used for momentum values.
     - Possible values:
-        - `referenceTotalMomentum`: Normalize with respect to the `referenceTotalMomentum`
-        - `referenceEnergy`: Normalize with respect to the `referenceEenergy`
-        - `none`: No normalization
+        - `referenceTotalMomentum`: Normalize with respect to the `referenceTotalMomentum` attribute
+        - `referenceEnergy`: Normalize with respect to the `referenceEenergy` attribute.
+        - `none`: No normalization.
 
-- `referenceEnergy` 
-    - Type: Optional *(float)* attribute
+- `referenceEnergy`
+    - Type: Optional *(float)* attribute.
     - Description: Specifies the reference energy from which the `energy` is measured with respect to.
 
 - `referenceTotalMomentum`
     - Type: Optional *(float)* attribute
     - Description: Specifies the reference total momentum from which the total momentum is measured with respect to.
 
+- `totalCharge`
+    - Type: Optional *(float)* attribute.
+    - Description: The total charge of all the particles.
 
-Per Particle Records of the `Particle Root Group`
+Per-Particle Records of the `Particle Root Group`
 ---------------------
 
 The following records store data on a particle by particle basis.
+
+- `time-refTime`
+- Type: Optional *(float)*
+- Description: Particle time minus the referece time.
 
 - `energy/`
   - Type: Optional *(float)*
@@ -146,9 +162,9 @@ The following records store data on a particle by particle basis.
 
 - `electricField/`
     - Type: Optional 2-component *(float)*
-    - Description: For photons this is the electric field.
+    - Description: Electric field. Used for photons only.
     - Components: (`x`, `y`).
-        - For each component, the field is specified using either (`amplitude`, `phase`) or (`Real`, `Imaginary`) 
+        - For each component, the field is specified using either (`amplitude`, `phase`) or (`Real`, `Imaginary`)
         subcomponents.
 
 - `macroCharge/`
@@ -161,27 +177,27 @@ The following records store data on a particle by particle basis.
     - Type: Optional 2 or 3-vector *(float)*
     - Description: The total momentum of the particles relative to the `momentumOrigin` attribute.
     - Components: (`px`, `py`) or (`px`, `py`, `pz`).
-    - Note: A program using phase space coordinates will typically use the transverse momentum
-    `px` and `py` along with the `totalMomentum` or `energy`.
+    - Note: A program using phase space coordinates to describe particle positions will typically use the transverse momentum
+    `px` and `py` along with the `totalMomentum` or `energy` records.
 
 - `pathLength/`
     - Type: Optional *(float)*
     - Description: Length that a particle has traveled.
 
 - `position`
-    - Type: Optional 3-vector *(float)*
-    - Description: Position relative to the coordinate origin. 
+    - Type: Required 3-vector *(float)*
+    - Description: Position relative to the coordinate origin.
     - Components: (`x`, `y`, `<z-coord>`) where `<z-coord>` is one of:
         - `z`: True longitudinal coordinate.
         - `-beta.c.dt`: Phase space coordinate conjugate to a momentum based "pz".
         - `-beta.c.t`:Phase space coordinate conjugate to a momentum based "pz".
         - `-c.dt`: Phase space coordinate conjugate to an energy based "pz".
         - `-c.t`: Phase space coordinate conjugate to an energy based "pz".
-        - Where: `beta` = particle speed, `c` = speed of light, `t` = time, dt = time relative to the reference time.
+        - Where: **beta** = particle speed, **c** = speed of light, **t** = time, and **dt** = time relative to the reference time.
 
 - `refTime/`
     - Type: Optional *(float)*
-    - Description: The reference particle time. 
+    - Description: The reference particle time.
     Note that the reference time is a function of **s** and therefore can be different for different particles.
 
 - `s-Position`
@@ -197,7 +213,7 @@ The following records store data on a particle by particle basis.
     - Description: Particle spin.
     - Components: (`x`, `y`, `s`) or (`r`, `theta`, `phi`).
 
-- `time/'
+- `time/`
     - Type: Optional *(float)*
     - Description: Absolute particle time. Note: Particles may have different times if the snapshot
     is, for example, taken at constant **s**.
@@ -206,8 +222,10 @@ The following records store data on a particle by particle basis.
     - Type: Optional *(float)*
     - Description: The total momentum of the particles relative to the `referenceTotalMomentum` attribute.
 
-Non Per Particle Records of the `Particle Root Group`
+Non Per-Particle Records of the `Particle Root Group`
 ---------------------
+
+The following possible records of the `Particle Root Group` are for specifying properties of the entire group of particles.
 
 - `phaseSpaceFirstOrderMoment/`
   - Type: Optional 6-vector *(float)*
@@ -225,12 +243,12 @@ Non Per Particle Records of the `Particle Root Group`
   - Type: Optional group.
   - Description: Defines the transformation from **lattice** coordinates to **global** coordinates for a position
   specified by `latticeElementName`/`latticeElementID` and `locationInElement`.
-  - `R_frame`: 
+  - `R_frame`:
     - Required 3-vector *(float)* Attribute
     - Description: specifying the (x, y, z) position of the **lattice** coordinate origin with respect
   to the **global** coordinates.
-  - `W_matrix`: 
-    - Required 3 x 3 matrix *(float)* 
+  - `W_matrix`:
+    - Required 3 x 3 matrix *(float)*
     - Description: Dataset holding the 3x3 transformation matrix from **lattice** coordinates to **global**
   coordinates.
   - Position Transformation: Position_global = W_matrix * Position_lattice + R_frame
@@ -238,7 +256,7 @@ Non Per Particle Records of the `Particle Root Group`
 
 
 Particle Record Dataset Attributes
------------------------------ 
+-----------------------------
 
 The following attributes can be used with any dataset:
 
